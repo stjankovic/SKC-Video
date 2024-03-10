@@ -11,8 +11,14 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'pages', 'index.html')); // Serve your index.html file
 });
 
-// Other routes...
+app.post('/start', (req, res) => {
+  const data = req.body; // Access data from the body of the request
+  console.log('Received data from ESP8266:', data);
+  
+  res.status(200).send();
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
