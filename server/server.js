@@ -3,16 +3,19 @@ const app = express();
 
 const PORT = 3000;
 
+// Middleware to parse JSON bodies. This must come before any routes that will need it.
+app.use(express.json());
+
 app.get('/', (req, res) => {
   res.send('Hello from Raspberry Pi');
 });
 
 app.post('/start', (req, res) => {
-  const data = req.query;
+  const data = req.body; // Access data from the body of the request
   console.log('Received data from ESP8266:', data);
-  // console.log(res);
-  console.log(req);
-  res.send('OK');
+  
+  // Optionally, send a response back to the ESP8266
+  res.status(200).json({ message: "Data received successfully" });
 });
 
 app.listen(PORT, () => {
