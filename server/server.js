@@ -12,10 +12,9 @@ app.get('/', (req, res) => {
 
 app.post('/start', (req, res) => {
   const data = req.body; // Access data from the body of the request
-  console.log('Trigger');
+  console.log('Received data from ESP8266:', data);
   
-  // Optionally, send a response back to the ESP8266
-  res.status(200);
+  res.status(200).send();
 });
 
 app.listen(PORT, () => {
