@@ -19,14 +19,26 @@
 </head>
 <body>
 
-<video id="fullscreenVideo" autoplay loop muted>
+<video id="fullscreenVideo" autoplay muted>
     <source src="path_to_your_video.mp4" type="video/mp4">
     Your browser does not support HTML5 video.
 </video>
 
+<script src="/socket.io/socket.io.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
+    const socket = io();
+
+    socket.on('restart-video', function() {
+        const video = document.getElementById('fullscreenVideo');
+        video.currentTime = 0; // Reset the video
+        video.play(); // Play the video
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
         var videoElement = document.getElementById('fullscreenVideo');
+
         // Attempt to play the video as soon as the document is fully loaded
         videoElement.play().catch(error => {
             console.error("Video play failed:", error);
@@ -44,35 +56,29 @@
                 videoElement.msRequestFullscreen();
             }
         });
-    });
-</script>
-<script src="/socket.io/socket.io.js"></script>
-    <script>
-    const socket = io();
 
-    socket.on('restart-video', function() {
-        const video = document.getElementById('fullscreenVideo');
-        video.currentTime = 0; // Reset the video
-        video.play(); // Play the video
+        // Stop the video when it ends
+        videoElement.addEventListener('ended', () => {
+            console.log("Video has ended.");
+            // Here you can handle what to do next after the video ends.
+        });
+
+        fetchVideosAndSetFirstOne(videoElement);
     });
+
+    function fetchVideosAndSetFirstOne(videoElement) {
+        fetch('/videos')
+            .then(response => response.json())
+            .then(videos => {
+                if (videos.length > 0) {
+                    const selectedVideo = videos[0];
+                    videoElement.src = `/video/${selectedVideo}`;
+                    videoElement.play();
+                }
+            })
+            .catch(error => console.error('Error fetching video list:', error));
+    }
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-      fetch('/videos')
-        .then(response => response.json())
-        .then(videos => {
-          if (videos.length > 0) {
-            // Example: select the first video
-            const selectedVideo = videos[0];
-            const videoPlayer = document.getElementById('fullscreenVideo');
-            videoPlayer.src = `/video/${selectedVideo}`;
-            videoPlayer.play();
-          }
-        })
-        .catch(error => console.error('Error fetching video list:', error));
-    });
-  </script>
-  
 </body>
 </html>
