@@ -9,7 +9,7 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
   // The URL you want to open in Chromium
-  const url = 'http://localhost:3000';
+  const url = 'http://skc.local:3000/';
 
   // Command to open Chromium in fullscreen mode
   // Adjust the path to Chromium as necessary for your system
