@@ -38,9 +38,11 @@ void loop() {
 
     // Check the returning http response code
     if (httpCode > 0) {
-      String payload = http.getString();
-      Serial.println(httpCode);
-      Serial.println(payload);
+      // String payload = http.getString();
+      // Serial.println(httpCode);
+      // Serial.println(payload);
+      Serial.println('Trigger Sent OK');
+    
     } else {
       Serial.println("Error in HTTP request");
     }
