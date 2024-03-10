@@ -8,7 +8,6 @@ const char* apiEndpoint = "http://skc.local:3000/start";
 const char* ssid = "Yettel_62D720";
 const char* password = "SR5YcsRz";
 
-
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
@@ -22,22 +21,31 @@ void setup() {
 }
 
 void loop() {
-    if (WiFi.status() == WL_CONNECTED) {
-        WiFiClient client; 
-        HTTPClient http;
+  if (WiFi.status() == WL_CONNECTED) {
+    WiFiClient client; 
+    HTTPClient http;
 
-        http.begin(client, apiEndpoint); // Updated to the new API
-        int httpCode = http.GET();
+    http.begin(client, apiEndpoint); // Specify the URL
 
-        if (httpCode > 0) {
-            String payload = http.getString();
-            Serial.println(httpCode);
-            Serial.println(payload);
-        } else {
-            Serial.println("Error in HTTP request");
-        }
+    // Set appropriate headers, if required by the API (e.g., for content type or authentication)
+    http.addHeader("Content-Type", "application/json");
 
-        http.end();
+    // Prepare your data as a JSON string or in the format required by your API
+    String postData = "{\"name\": \"Stefan\"}";
+
+    // Send a POST request with your data
+    int httpCode = http.POST(postData);
+
+    // Check the returning http response code
+    if (httpCode > 0) {
+      String payload = http.getString();
+      Serial.println(httpCode);
+      Serial.println(payload);
+    } else {
+      Serial.println("Error in HTTP request");
     }
-    delay(10000); // Wait for 10 seconds between requests
+
+    http.end(); //Close connection
+  }
+  delay(10000); // Wait for 10 seconds between requests
 }

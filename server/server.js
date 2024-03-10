@@ -7,10 +7,10 @@ app.get('/', (req, res) => {
   res.send('Hello from Raspberry Pi');
 });
 
-app.get('/start', (req, res) => {
+app.post('/start', (req, res) => {
   const data = req.query;
   console.log('Received data from ESP8266:', data);
-  res.send('Data received');
+  res.send('OK');
 });
 
 app.listen(PORT, () => {
