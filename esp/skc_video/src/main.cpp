@@ -38,10 +38,10 @@ void loop() {
 
     // Check the returning http response code
     if (httpCode > 0) {
-      String payload = http.getString();
-      Serial.println(httpCode);
-      Serial.println(payload);
-      // Serial.println("Trigger Sent OK");
+      // String payload = http.getString();
+      // Serial.println(httpCode);
+      // Serial.println(payload);
+      Serial.println("Trigger Received OK");
     
     } else {
       Serial.println("Error in HTTP request");
@@ -49,5 +49,5 @@ void loop() {
 
     http.end(); //Close connection
   }
-  delay(1500); // Wait for 0.5 seconds between requests
+  delay(5000); // Wait for 0.5 seconds between requests
 }
