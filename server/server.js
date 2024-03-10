@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
+const fs = require('fs'); // Import the File System module
 const { Server } = require("socket.io");
 
 const app = express();
