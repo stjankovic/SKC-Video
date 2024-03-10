@@ -10,8 +10,8 @@ app.get('/', (req, res) => {
 app.post('/start', (req, res) => {
   const data = req.query;
   console.log('Received data from ESP8266:', data);
-  console.log(res);
-  // console.log(req);
+  // console.log(res);
+  console.log(req);
   res.send('OK');
 });
 
