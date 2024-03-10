@@ -7,7 +7,7 @@ app.get('/', (req, res) => {
   res.send('Hello from Raspberry Pi');
 });
 
-app.get('/data', (req, res) => {
+app.get('/start', (req, res) => {
   const data = req.query;
   console.log('Received data from ESP8266:', data);
   res.send('Data received');
