@@ -4,56 +4,74 @@
 #include <WiFiClient.h>
 
 const char* apiEndpoint = "http://skc.local:3000/start";
-const char* ssid = "Yettel_62D720";
-const char* password = "SR5YcsRz";
 
-// Button pin setup
+// First network credentials
+const char* ssid1 = "SKC1";
+const char* password1 = "skckg1234";
+
+// Second network credentials
+const char* ssid2 = "Yettel_62D720";
+const char* password2 = "SR5YcsRz";
+
 const int buttonPin = D1; // Use the GPIO pin number where your button is connected
+const int maxAttempts = 15; // Maximum attempts for the first network
+
+void connectWiFi(const char* ssid, const char* password) {
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting to ");
+  Serial.print(ssid);
+
+  int attempts = 0;
+
+  while (WiFi.status() != WL_CONNECTED && attempts < maxAttempts) {
+    delay(500);
+    Serial.print(".");
+    attempts++;
+  }
+
+  if(WiFi.status() == WL_CONNECTED) {
+    Serial.println("\nConnected to the WiFi network");
+  } else {
+    Serial.println("\nFailed to connect.");
+  }
+}
 
 void setup() {
   Serial.begin(115200);
-  WiFi.begin(ssid, password);
+  pinMode(buttonPin, INPUT_PULLUP);
 
-  pinMode(buttonPin, INPUT_PULLUP); // Initialize the button pin as input with internal pull-up resistor
+  // Try to connect to the first network
+  connectWiFi(ssid1, password1);
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.println("Connecting to WiFi...");
+  // If not connected, try the second network
+  if (WiFi.status() != WL_CONNECTED) {
+    connectWiFi(ssid2, password2);
   }
-
-  Serial.println("Connected to the WiFi network");
 }
 
 void loop() {
-  int buttonState = digitalRead(buttonPin); // Read the state of the button
-  
-  if (buttonState == LOW) { // Check if the button is pressed
+  int buttonState = digitalRead(buttonPin);
+
+  if (buttonState == LOW) {
     if (WiFi.status() == WL_CONNECTED) {
-      WiFiClient client; 
+      WiFiClient client;
       HTTPClient http;
 
-      http.begin(client, apiEndpoint); // Specify the URL
-
-      // Set appropriate headers, if required by the API
+      http.begin(client, apiEndpoint);
       http.addHeader("Content-Type", "application/json");
 
-      // Prepare your data as a JSON string or in the format required by your API
       String postData = "{\"name\": \"Stefan\"}";
-
-      // Send a POST request with your data
       int httpCode = http.POST(postData);
 
-      // Check the returning http response code
       if (httpCode > 0) {
         Serial.println("Trigger Received OK");
       } else {
         Serial.println("Error in HTTP request");
       }
 
-      http.end(); //Close connection
+      http.end();
     }
 
-    // Debounce delay to avoid multiple triggers from a single press
-    delay(500); // Adjust this value if needed
+    delay(500); // Debounce delay
   }
 }
